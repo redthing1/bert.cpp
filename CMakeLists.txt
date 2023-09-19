@@ -15,8 +15,9 @@ endif()
 
 # general
 option(BERT_STATIC                 "bert: static link libraries"                          OFF)
-option(BERT_NATIVE                 "bert: enable -march=native flag"                       OFF)
+option(BERT_NATIVE                 "bert: enable -march=native flag"                      OFF)
 option(BERT_LTO                    "bert: enable link time optimization"                  OFF)
+option(BERT_FIX_ASI                "bert: fix arm build on apple silicon"                 OFF)
 
 # debug
 option(BERT_ALL_WARNINGS           "bert: enable all compiler warnings"                   OFF)
@@ -156,8 +157,10 @@ if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES
     if (MSVC)
         # TODO: arm msvc?
     else()
-        if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-            add_compile_options(-mcpu=native)
+	if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+		# if (NOT BERT_FIX_ASI)
+	    	#     add_compile_options(-mcpu=native)
+	    	# endif()
         endif()
         # TODO: armv6,7,8 version specific flags
     endif()
@@ -190,7 +193,7 @@ endif()
 
 add_subdirectory(ggml)
 
-add_library(bert
+add_library(bert SHARED
             bert.cpp
             bert.h)
 
