@@ -458,7 +458,7 @@ struct bert_ctx * bert_load_from_file(const char *fname)
         model_mem_req += n_layer * (n_intermediate * ggml_type_sizef(GGML_TYPE_F32)); // ff_i_b
         model_mem_req += n_layer * (n_embd * ggml_type_sizef(GGML_TYPE_F32)); // ff_o_b
 
-        model_mem_req += (5 + 16 * n_layer) * 512; // object overhead
+        model_mem_req += (5 + 16 * n_layer) * 512 * 1.1; // object overhead
 
         printf("%s: ggml ctx size = %6.2f MB\n", __func__, model_mem_req / (1024.0 * 1024.0));
     }
@@ -685,7 +685,7 @@ struct bert_ctx * bert_load_from_file(const char *fname)
 
         // TODO: Max tokens should be a param?
         int32_t N = new_bert->model.hparams.n_max_tokens;
-        new_bert->mem_per_input = 1.1 * (new_bert->mem_per_token * N); // add 10% to account for ggml object overhead
+        new_bert->mem_per_input = 2 * (new_bert->mem_per_token * N); // add 10% to account for ggml object overhead
 
     }
     printf("%s: mem_per_token %zu KB, mem_per_input %lld MB\n", __func__, new_bert->mem_per_token / (1 << 10), new_bert->mem_per_input / (1 << 20));
