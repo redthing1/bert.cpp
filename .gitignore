@@ -1,6 +1,7 @@
 .vscode
 
 build
+build_linux
 models/*/*
 
 compile_commands.json
